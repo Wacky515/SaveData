@@ -1,0 +1,13 @@
+*.un~
+*.*~
+*.swp
+*.pyc
+*.swo
+*.sw*
+
+./
+!*.py
+!*.txt
+!*.md
+old/
+MasterData/
