@@ -1,14 +1,14 @@
 ﻿# !/usr/bin/python
 # -*- coding: utf-8 -*-
 # --------------------------------------------------# {{{
-# Name:        SaveData
-# Purpose:
+# Name:        savedata.py
+# Purpose:     In README.md
 #
 # Author:      Kilo11
 #
 # Created:     23/03/2016
 # Copyright:   (c) SkyDog 2016
-# Licence:     SDS10007
+# Licence:     SDS10006
 # --------------------------------------------------
 # }}}
 """ データ保存 処理 """
@@ -56,29 +56,31 @@ class SaveData:
 
     def get_name_max(self, extension, save_lim=0):
         """ ファイル名 検索 番名の最大値 取得 """
-        glob_pattern = ""
-        re_pattern = ""
-        search = ""
-        find = ""
-        get_num = ""
-        set_num = ""
+        glob_pattern = None
+        re_pattern = None
+        search = None
+        find = None
+        get_num = None
+        set_num = None
         self.match_flag = False
 
         # "glob_pattern" を検索
+        # 末尾4桁が数字のパターン
         glob_pattern = "{}\\{}_[0-9][0-9][0-9][0-9][0-9]{}"\
-                .format(self.path, self.name, extension)
+                       .format(self.path, self.name, extension)
         match_file = glob.glob(glob_pattern)
+        search_file = str(self.name) + "_*****" + str(extension)
 
-        serch_file = str(self.name) + "_*****" + str(extension)
-        print("")
+        print("")  # {{{
         print(" START GET MAX BRANCH No. ".center(print_col, "-"))
         print("Save lim: {}".format(save_lim))
-        print("Serch file & path:")
+        print("Search file & path:")
         print(self.path.rjust(print_col, " "))
-        print(serch_file.rjust(print_col, " "))
+        print(search_file.rjust(print_col, " "))
         print("Search name:")
         print(str(self.name).rjust(print_col, " "))
         print("")
+# }}}
 
         # ファイル有無 判定
         if match_file:
@@ -89,6 +91,7 @@ class SaveData:
         else:
             try:
                 os.mkdir("{}".format(self.path))
+
             except:
                 set_name = self.path + self.name + "_00000" + extension
                 self.match_flag = False
@@ -98,6 +101,7 @@ class SaveData:
             list_name = []
             print("".center(print_col, "/"))
             print("Match file:")
+
             for obj in match_file:
                 # ヒットしたファイルのタイムスタンプ取得 処理
                 stat = os.stat(obj)
@@ -122,9 +126,10 @@ class SaveData:
         else:
             set_name = self.path + self.name + "_00000" + extension
             old_name = self.path + self.name + "_00000" + extension
+
         print("")
 
-        # "_[2連続以上の数値型]"を検索し、"数値のみ"取得 インクリメント
+        # "_[2連続以上の数値型]"を検索し、"数値のみ" 取得してインクリメント
         re_pattern = re.compile("_\d{2,}")
         search = re_pattern.search(set_name)
         find = search.group()[1:]
@@ -168,22 +173,22 @@ class SaveData:
         print("Get name: " + str(self.get_name))
 
         data = open("{}\\{}.txt"
-                .format(self.path, self.get_name), "a")
+                    .format(self.path, self.get_name), "a")
         data.write("Save time: {}, {} \r\n"
-                .format(self.time, text))
+                   .format(self.time, text))
         data.close()
 
-    def save_image(self, image, extension, save_lim=0, end_process=0):
+    def save_image(self, image, extension, save_lim=0, end_process=None):
         self.get_name_max(extension, save_lim)
 
         print("Set path: " + str(self.path))
         print("Set name: " + str(self.set_name))
 
         cv2.imwrite("{}\\{}{}".format(self.path,
-            self.set_name, extension), image)
+                    self.set_name, extension), image)
 
         print("Complete save")
-        if end_process != 0:
+        if end_process is not None:
             cv2.destroyAllWindows
             print("Close all windows")
         print("")
@@ -191,12 +196,11 @@ class SaveData:
 
 
 def main():
-    name = "MasterPic"
-    path = ".\\MasterData"
-    path_master = "D:\\OneDrive\\Biz\\Python\\ImageProcessing\\MasterImage"
+    name = "TestOut"
+    path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
 
     test_save = SaveData(name, path_master)
     test_save.save_text()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

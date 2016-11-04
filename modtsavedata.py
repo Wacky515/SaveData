@@ -1,16 +1,15 @@
-﻿#-------------------------------------------------------------------------------
-# Name:        ModuleTestSaveData
-# Purpose:
+﻿# !/usr/bin/python
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Name:        modtsavedata.py
+# Purpose:     In README.md
 #
 # Author:      Kilo11
 #
 # Created:     24/03/2016
 # Copyright:   (c) SkyDog 2016
-# Licence:     SDS10007-1
-#-------------------------------------------------------------------------------
-#!/usr/bin/python
-# デフォルトの文字コード 変更
-# -*- coding: utf-8 -*-
+# Licence:     SDS10007
+# -----------------------------------------------------------------------------
 
 # モジュールインポート
 import savedata as sd
@@ -33,5 +32,5 @@ savedata.SaveData()
 def main():
     pass
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
