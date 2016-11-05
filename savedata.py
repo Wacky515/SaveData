@@ -13,24 +13,29 @@
 # }}}
 """ データ保存 処理 """
 
-# TODO: " *_0000.txt " ->  " *.txt "
-# TODO: Unix対応
-# TODO: テキストログのヘッダを生成する
-# TODO: 変数は "[大区分/固有]_[小区分/汎用]"
+# TODO:
+# Unix対応(Cek saja)
+# テキストログのヘッダを生成する
+# 変数は "[大区分/固有]_[小区分/汎用]"
 
-# DONE: 関数名は動詞にする
-# DONE: 文字列の埋込を % 形式から format 形式に変更
-# DONE: Unicode文字リテラルを " u"body" " -> " "body" " に変更
-# DONE: "print" -> "print()" に変更
-# DONE: 保存後に画面終了遷移を実装し、引数でオプション化する
-# DONE: 画像保存数制限
+# DONE:
+# " *_0000.txt " ->  " *.txt "
+# Mac対応
+# 関数名は動詞にする
+# 文字列の埋込を % 形式から format 形式に変更
+# Unicode文字リテラルを " u"body" " -> " "body" " に変更
+# "print" -> "print()" に変更
+# 保存後に画面終了遷移を実装し、引数でオプション化する
+# 画像保存数制限
 
 # モジュールインポート
 import os
 import re
 import sys
 import glob
+import platform
 import datetime
+
 from operator import itemgetter
 
 try:
@@ -54,6 +59,11 @@ class SaveData:
         self.name = name
         self.path = path
 
+        if os.name != "nt":
+            self.delimiter = "/"
+        elif os.name == "nt":
+            self.delimiter = "\\"
+
     def get_name_max(self, extension, save_lim=0):
         """ ファイル名 検索 番名の最大値 取得 """
         glob_pattern = None
@@ -66,8 +76,8 @@ class SaveData:
 
         # "glob_pattern" を検索
         # 末尾4桁が数字のパターン
-        glob_pattern = "{}\\{}_[0-9][0-9][0-9][0-9][0-9]{}"\
-                       .format(self.path, self.name, extension)
+        glob_pattern = "{}{}{}_[0-9][0-9][0-9][0-9][0-9]{}"\
+                       .format(self.path, self.delimiter, self.name, extension)
         match_file = glob.glob(glob_pattern)
         search_file = str(self.name) + "_*****" + str(extension)
 
@@ -163,20 +173,31 @@ class SaveData:
 
         return self.set_name, self.get_name, self.match_flag
 
-    def save_text(self, text="None"):
+    def save_text(self, text="None", numbering=False):
         """ データ保存 処理 """
         extension = ".txt"
         self.time = datetime.datetime.today()
         self.get_name_max(extension)
 
         print("Get path: " + str(self.path))
-        print("Get name: " + str(self.get_name))
+        if numbering is True:
+            print("Get name: " + str(self.get_name))
+        elif numbering is False:
+            print("Get name: " + str(self.name))
 
-        data = open("{}\\{}.txt"
-                    .format(self.path, self.get_name), "a")
-        data.write("Save time: {}, {} \r\n"
-                   .format(self.time, text))
-        data.close()
+        if os.name != "nt":
+            delimiter = "/"
+        elif os.name == "nt":
+            delimiter = "\\"
+
+        if numbering is True:
+            file_name = self.get_name
+        elif numbering is False:
+            file_name = self.name
+
+        with open("{}{}{}.txt".format(self.path, delimiter, file_name),
+                  "a") as data:
+            data.write("Save time: {}, {} \r\n".format(self.time, text))
 
     def save_image(self, image, extension, save_lim=0, end_process=None):
         self.get_name_max(extension, save_lim)
@@ -196,11 +217,20 @@ class SaveData:
 
 
 def main():
-    name = "TestOut"
-    path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
+    host = platform.uname()[1]
+    if host == "cad0021":
+        name = "TestOutWin"
+        path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
+        text = "test from Z420"
+
+    elif host == "ProSalad13.local":
+        name = "TestOutMac"
+        path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
+        text = "test from MacPro"
 
     test_save = SaveData(name, path_master)
-    test_save.save_text()
+    test_save.save_text(text)
+    test_save.save_text(text, numbering=True)
 
 if __name__ == "__main__":
     main()
