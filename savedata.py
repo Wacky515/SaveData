@@ -33,14 +33,14 @@ import os
 import re
 import sys
 import glob
-import platform
 import datetime
+import platform
 
 from operator import itemgetter
 
 try:
     import cv2
-    # import cv2.cv as cv
+    import cv2.cv as cv
 except:
     pass
 
@@ -59,6 +59,7 @@ class SaveData:
         self.name = name
         self.path = path
 
+        # UnixとWindowsのデリミタ差異 補完
         if os.name != "nt":
             self.delimiter = "/"
         elif os.name == "nt":
@@ -107,6 +108,7 @@ class SaveData:
                 self.match_flag = False
 
         print("Match is " + str(self.match_flag))
+
         if self.match_flag is True:
             list_name = []
             print("".center(print_col, "/"))
@@ -181,21 +183,13 @@ class SaveData:
 
         print("Get path: " + str(self.path))
         if numbering is True:
-            print("Get name: " + str(self.get_name))
-        elif numbering is False:
-            print("Get name: " + str(self.name))
-
-        if os.name != "nt":
-            delimiter = "/"
-        elif os.name == "nt":
-            delimiter = "\\"
-
-        if numbering is True:
             file_name = self.get_name
         elif numbering is False:
             file_name = self.name
 
-        with open("{}{}{}.txt".format(self.path, delimiter, file_name),
+        print("Get name: " + str(file_name))
+
+        with open("{}{}{}.txt".format(self.path, self.delimiter, file_name),
                   "a") as data:
             data.write("Save time: {}, {} \r\n".format(self.time, text))
 
@@ -205,8 +199,8 @@ class SaveData:
         print("Set path: " + str(self.path))
         print("Set name: " + str(self.set_name))
 
-        cv2.imwrite("{}\\{}{}".format(self.path,
-                    self.set_name, extension), image)
+        cv2.imwrite("{}{}{}{}".format(self.path,
+                    self.set_name, self.delimiter, extension), image)
 
         print("Complete save")
         if end_process is not None:
