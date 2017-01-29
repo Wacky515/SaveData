@@ -199,8 +199,10 @@ class SaveData:
         print("Set path: " + str(self.path))
         print("Set name: " + str(self.set_name))
 
-        cv2.imwrite("{}{}{}{}".format(self.path,
-                    self.set_name, self.delimiter, extension), image)
+        print("Save as: {}{}{}{}".format(self.path, self.delimiter,
+                                         self.set_name, extension))
+        cv2.imwrite("{}{}{}{}".format(self.path, self.delimiter,
+                    self.set_name, extension), image)
 
         print("Complete save")
         if end_process is not None:
@@ -219,7 +221,8 @@ def main():
 
     elif host == "ProSalad13.local":
         name = "TestOutMac"
-        path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
+        # path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
+        path_master = "/Users/wacky515/OneDrive/Biz/Python"
         text = "test from MacPro"
 
     test_save = SaveData(name, path_master)
