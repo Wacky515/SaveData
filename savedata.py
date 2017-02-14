@@ -14,7 +14,7 @@
 """ データ保存 処理 """
 
 # TODO:
-# Unix対応(Cek saja)
+# Unix対応(ホームディレクトリの指定が不明、"~/" が使えない)
 # テキストログのヘッダを生成する
 # 変数は "[大区分/固有]_[小区分/汎用]"
 
@@ -60,6 +60,7 @@ class SaveData:
         self.path = path
 
         # UnixとWindowsのデリミタ差異 補完
+# TODO: "os.path.join" を使う
         if os.name != "nt":
             self.delimiter = "/"
         elif os.name == "nt":
@@ -189,8 +190,11 @@ class SaveData:
 
         print("Get name: " + str(file_name))
 
-        with open("{}{}{}.txt".format(self.path, self.delimiter, file_name),
-                  "a") as data:
+        spt = self.path
+        sdm = self.delimiter
+        name_save = "{}{}{}.txt".format(spt, sdm, file_name)
+
+        with open(name_save, "a") as data:
             data.write("Save time: {}, {} \r\n".format(self.time, text))
 
     def save_image(self, image, extension, save_lim=0, end_process=None):
@@ -199,10 +203,11 @@ class SaveData:
         print("Set path: " + str(self.path))
         print("Set name: " + str(self.set_name))
 
-        print("Save as: {}{}{}{}".format(self.path, self.delimiter,
-                                         self.set_name, extension))
-        cv2.imwrite("{}{}{}{}".format(self.path, self.delimiter,
-                    self.set_name, extension), image)
+        spt = self.path
+        sdm = self.delimiter
+        path_save = "{}{}{}{}".format(spt, sdm, self.set_name, extension)
+        print("Save as: " + path_save)
+        cv2.imwrite(path_save, image)
 
         print("Complete save")
         if end_process is not None:
@@ -221,13 +226,20 @@ def main():
 
     elif host == "ProSalad13.local":
         name = "TestOutMac"
-        # path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
-        path_master = "/Users/wacky515/OneDrive/Biz/Python"
+        path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
+        # path_master = "/Users/wacky515/OneDrive/Biz/Python"
         text = "test from MacPro"
+
+    else:
+        name = "Other_PC"
+        # これはエラー: path_master = "~/Python/SaveData/TestOut"
+        path_master = "/home/killo11/Python/SaveData/TestOut"
+        text = "test from other PC"
 
     test_save = SaveData(name, path_master)
     test_save.save_text(text)
     test_save.save_text(text, numbering=True)
+    test_save.save_image("test", ".png")
 
 if __name__ == "__main__":
     main()
