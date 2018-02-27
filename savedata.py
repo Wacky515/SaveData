@@ -44,11 +44,14 @@ try:
 except:
     pass
 
-# sysモジュール リロード
-reload(sys)
+# Python3用
+import importlib
 
+# sysモジュール リロード
+if sys.version_info.major == 2:
+    reload(sys)
 # デフォルトの文字コード 出力
-sys.setdefaultencoding("utf-8")
+    sys.setdefaultencoding("utf-8")
 
 print_col = 50
 
@@ -233,7 +236,7 @@ def main():
     else:
         name = "Other_PC"
         # これはエラー: path_master = "~/Python/SaveData/TestOut"
-        path_master = "/home/killo11/Python/SaveData/TestOut"
+        path_master = os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Python\\SaveData\\TestOut"
         text = "test from other PC"
 
     test_save = SaveData(name, path_master)
