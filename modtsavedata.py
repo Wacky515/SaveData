@@ -6,20 +6,23 @@
 #
 # Author:      Kilo11
 #
-# Created:     24/03/2016
+# Created:     2016/03/24
+# Last Change: 2021/03/04 12:10:46.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10007
 # -----------------------------------------------------------------------------
+""" データ保存 処理 GUI """
 
 # モジュールインポート
+import sys
 import savedata as sd
 
-import sys
-# sysモジュール リロード
-reload(sys)
-
-# デフォルトの文字コード 出力
-sys.setdefaultencoding("utf-8")
+# Python2 用設定
+if sys.version_info.major == 2:
+    # sysモジュール リロード
+    reload(sys)
+    # デフォルトの文字コード 出力
+    sys.setdefaultencoding("utf-8")
 
 name_first = "MasterPic"
 file_name = "%s_*.txt" % name_first

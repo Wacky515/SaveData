@@ -1,12 +1,13 @@
 ﻿# !/usr/bin/python
 # -*- coding: utf-8 -*-
-# --------------------------------------------------# {{{
+# --------------------------------------------------  # {{{
 # Name:        savedata.py
 # Purpose:     In README.md
 #
 # Author:      Kilo11
 #
-# Created:     23/03/2016
+# Created:     2016/03/23
+# Last Change: 2021/03/04 11:55:02.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10006
 # --------------------------------------------------
@@ -14,19 +15,11 @@
 """ データ保存 処理 """
 
 # TODO:
+# 変数は "[大区分/固有]_[小区分/汎用]"
 # Unix対応(ホームディレクトリの指定が不明、"~/" が使えない)
 # テキストログのヘッダを生成する
-# 変数は "[大区分/固有]_[小区分/汎用]"
 
 # DONE:
-# " *_0000.txt " ->  " *.txt "
-# Mac対応
-# 関数名は動詞にする
-# 文字列の埋込を % 形式から format 形式に変更
-# Unicode文字リテラルを " u"body" " -> " "body" " に変更
-# "print" -> "print()" に変更
-# 保存後に画面終了遷移を実装し、引数でオプション化する
-# 画像保存数制限
 
 # モジュールインポート
 import os
@@ -40,17 +33,21 @@ from operator import itemgetter
 
 try:
     import cv2
-    import cv2.cv as cv
-except:
-    pass
+except FailImportOpenCv:
+    print(">> Fail import OpenCV")
 
 # Python3用
 import importlib
 
-# sysモジュール リロード
+# Python2 用設定
 if sys.version_info.major == 2:
+    try:
+        import cv2.cv as cv
+    except FailImportOpenCv:
+        print(">> Fail import OpenCV(cv2.cv)")
+    # sysモジュール リロード
     reload(sys)
-# デフォルトの文字コード 出力
+    # デフォルトの文字コード 出力
     sys.setdefaultencoding("utf-8")
 
 print_col = 50
@@ -63,7 +60,7 @@ class SaveData:
         self.path = path
 
         # UnixとWindowsのデリミタ差異 補完
-# TODO: "os.path.join" を使う
+        # TODO: "os.path.join" を使う
         if os.name != "nt":
             self.delimiter = "/"
         elif os.name == "nt":
@@ -71,12 +68,12 @@ class SaveData:
 
     def get_name_max(self, extension, save_lim=0):
         """ ファイル名 検索 番名の最大値 取得 """
-        glob_pattern = None
-        re_pattern = None
-        search = None
-        find = None
-        get_num = None
-        set_num = None
+        glob_pattern    = None
+        re_pattern      = None
+        search          = None
+        find            = None
+        get_num         = None
+        set_num         = None
         self.match_flag = False
 
         # "glob_pattern" を検索
@@ -88,11 +85,11 @@ class SaveData:
 
         print("")  # {{{
         print(" START GET MAX BRANCH No. ".center(print_col, "-"))
-        print("Save lim: {}".format(save_lim))
-        print("Search file & path:")
+        print(">> Save lim: {}".format(save_lim))
+        print(">> Search file & path:")
         print(self.path.rjust(print_col, " "))
         print(search_file.rjust(print_col, " "))
-        print("Search name:")
+        print(">> Search name:")
         print(str(self.name).rjust(print_col, " "))
         print("")
 # }}}
@@ -111,12 +108,12 @@ class SaveData:
                 set_name = self.path + self.name + "_00000" + extension
                 self.match_flag = False
 
-        print("Match is " + str(self.match_flag))
+        print(">> Match is " + str(self.match_flag))
 
         if self.match_flag is True:
             list_name = []
             print("".center(print_col, "/"))
-            print("Match file:")
+            print(">> Match file:")
 
             for obj in match_file:
                 # ヒットしたファイルのタイムスタンプ取得 処理
@@ -134,10 +131,10 @@ class SaveData:
             # ヒットしたファイル タイムスタンプ順でソート
             list_name.sort(key=itemgetter(1))
             old_name = list_name[0][0]
-            print("Sort by time:")
+            print(">> Sort by time:")
             for obj in list_name:
                 print(obj)
-            print("Oldest: {}".format(old_name))
+            print(">> Oldest: {}".format(old_name))
 
         else:
             set_name = self.path + self.name + "_00000" + extension
@@ -164,16 +161,16 @@ class SaveData:
         # 保存数 制限
         if get_num >= save_lim > 0:
             self.set_name = str(self.name) + "_" + "{0:05d}".format(old_num)
-            print("Reset branch")
+            print(">> Reset branch")
         else:
             self.set_name = str(self.name) + "_" + "{0:05d}".format(set_num)
 
-        print("Get path & name ")
+        print(">> Get path & name ")
         print(str(self.set_name).rjust(print_col, " "))
-        print("Set branch No." + str(set_num))
-        print("Old name: " + str(self.old_name))
-        print("Get name: " + str(self.get_name))
-        print("Set name: " + str(self.set_name))
+        print(">> Set branch No." + str(set_num))
+        print(">> Old name: " + str(self.old_name))
+        print(">> Get name: " + str(self.get_name))
+        print(">> Set name: " + str(self.set_name))
         print(" END GET MAX BRANCH No. ".center(print_col, "-"))
         print("")
 
@@ -185,47 +182,47 @@ class SaveData:
         self.time = datetime.datetime.today()
         self.get_name_max(extension)
 
-        print("Get path: " + str(self.path))
+        print(">> Get path: " + str(self.path))
         if numbering is True:
             file_name = self.get_name
         elif numbering is False:
             file_name = self.name
 
-        print("Get name: " + str(file_name))
+        print(">> Get name: " + str(file_name))
 
         spt = self.path
         sdm = self.delimiter
         name_save = "{}{}{}.txt".format(spt, sdm, file_name)
 
         with open(name_save, "a") as data:
-            data.write("Save time: {}, {} \r\n".format(self.time, text))
+            data.write(">> Save time: {}, {} \r\n".format(self.time, text))
 
     def save_image(self, image, extension, save_lim=0, end_process=None):
         self.get_name_max(extension, save_lim)
 
-        print("Set path: " + str(self.path))
-        print("Set name: " + str(self.set_name))
+        print(">> Set path: " + str(self.path))
+        print(">> Set name: " + str(self.set_name))
 
         spt = self.path
         sdm = self.delimiter
         path_save = "{}{}{}{}".format(spt, sdm, self.set_name, extension)
-        print("Save as: " + path_save)
+        print(">> Save as: " + path_save)
         cv2.imwrite(path_save, image)
 
-        print("Complete save")
+        print(">> Complete save")
         if end_process is not None:
             cv2.destroyAllWindows
-            print("Close all windows")
+            print(">> Close all windows")
         print("")
         return self.path, self.set_name, extension
 
 
 def main():
     host = platform.uname()[1]
-    if host == "cad0021":
-        name = "TestOutWin"
-        path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
-        text = "test from Z420"
+    if host == "HBAMB1449":
+        name = "TestOutWinMuRata"
+        path_master = "C:\\Temp"
+        text = "test from HBAMB1448"
 
     elif host == "ProSalad13.local":
         name = "TestOutMac"
@@ -233,10 +230,16 @@ def main():
         # path_master = "/Users/wacky515/OneDrive/Biz/Python"
         text = "test from MacPro"
 
+    elif host == "cad0021":
+        name = "TestOutWin"
+        path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
+        text = "test from Z420"
+
     else:
         name = "Other_PC"
         # これはエラー: path_master = "~/Python/SaveData/TestOut"
-        path_master = os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Python\\SaveData\\TestOut"
+        # path_master = os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Python\\SaveData\\TestOut"
+        path_master = os.getenv("USERPROFILE") + "\\Python\\SaveData\\TestOut"
         text = "test from other PC"
 
     test_save = SaveData(name, path_master)

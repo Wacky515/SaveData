@@ -1,14 +1,5 @@
-*.un~
-*.*~
-*.swp
-*.pyc
-*.swo
-*.sw*
+# Create:      201*/**/** **:**:**
+# Last Change: 2021/03/04 12:16:48.
 
-./
-!*.py
-!*.txt
-!*.md
-old/
 MasterData/
 TestOut/
