@@ -7,7 +7,7 @@
 # Author:      Kilo11
 #
 # Created:     2016/03/23
-# Last Change: 2021/03/04 11:55:02.
+# Last Change: 2021/03/10 15:58:49.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10006
 # --------------------------------------------------
@@ -68,12 +68,12 @@ class SaveData:
 
     def get_name_max(self, extension, save_lim=0):
         """ ファイル名 検索 番名の最大値 取得 """
-        glob_pattern    = None
-        re_pattern      = None
-        search          = None
-        find            = None
-        get_num         = None
-        set_num         = None
+        glob_pattern = None
+        re_pattern = None
+        search = None
+        find = None
+        get_num = None
+        set_num = None
         self.match_flag = False
 
         # "glob_pattern" を検索
@@ -104,7 +104,7 @@ class SaveData:
             try:
                 os.mkdir("{}".format(self.path))
 
-            except:
+            except FailMakeDir:
                 set_name = self.path + self.name + "_00000" + extension
                 self.match_flag = False
 
@@ -246,6 +246,7 @@ def main():
     test_save.save_text(text)
     test_save.save_text(text, numbering=True)
     test_save.save_image("test", ".png")
+
 
 if __name__ == "__main__":
     main()

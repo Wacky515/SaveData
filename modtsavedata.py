@@ -7,7 +7,7 @@
 # Author:      Kilo11
 #
 # Created:     2016/03/24
-# Last Change: 2021/03/04 12:10:46.
+# Last Change: 2021/03/10 16:00:41.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10007
 # -----------------------------------------------------------------------------
@@ -34,6 +34,7 @@ savedata.SaveData()
 
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()
