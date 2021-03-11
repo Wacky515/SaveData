@@ -7,7 +7,7 @@
 # Author:      Kilo11
 #
 # Created:     2016/03/24
-# Last Change: 2021/03/10 16:00:41.
+# Last Change: 2021/03/11 13:37:55.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10007
 # -----------------------------------------------------------------------------
@@ -15,12 +15,13 @@
 
 # モジュールインポート
 import sys
+import importlib
 import savedata as sd
 
 # Python2 用設定
 if sys.version_info.major == 2:
     # sysモジュール リロード
-    reload(sys)
+    importlib.reload(sys)
     # デフォルトの文字コード 出力
     sys.setdefaultencoding("utf-8")
 

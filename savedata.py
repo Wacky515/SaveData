@@ -1,17 +1,16 @@
 ﻿# !/usr/bin/python
 # -*- coding: utf-8 -*-
-# --------------------------------------------------  # {{{
+# ----------------------------------------------------------------------  # {{{
 # Name:        savedata.py
 # Purpose:     In README.md
 #
 # Author:      Kilo11
 #
 # Created:     2016/03/23
-# Last Change: 2021/03/10 15:58:49.
+# Last Change: 2021/03/11 17:16:23.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10006
-# --------------------------------------------------
-# }}}
+# ----------------------------------------------------------------------  # }}}
 """ データ保存 処理 """
 
 # TODO:
@@ -25,28 +24,18 @@
 import os
 import re
 import sys
+import cv2
 import glob
 import datetime
 import platform
+import importlib
 
 from operator import itemgetter
 
-try:
-    import cv2
-except FailImportOpenCv:
-    print(">> Fail import OpenCV")
-
-# Python3用
-import importlib
-
 # Python2 用設定
 if sys.version_info.major == 2:
-    try:
-        import cv2.cv as cv
-    except FailImportOpenCv:
-        print(">> Fail import OpenCV(cv2.cv)")
     # sysモジュール リロード
-    reload(sys)
+    importlib.reload(sys)
     # デフォルトの文字コード 出力
     sys.setdefaultencoding("utf-8")
 
@@ -59,15 +48,15 @@ class SaveData:
         self.name = name
         self.path = path
 
-        # UnixとWindowsのデリミタ差異 補完
         # TODO: "os.path.join" を使う
+        # UnixとWindowsのデリミタ差異 補完
         if os.name != "nt":
             self.delimiter = "/"
         elif os.name == "nt":
             self.delimiter = "\\"
 
     def get_name_max(self, extension, save_lim=0):
-        """ ファイル名 検索 番名の最大値 取得 """
+        """ ファイル名検索 枝番の最大値 取得 """
         glob_pattern = None
         re_pattern = None
         search = None
@@ -77,9 +66,9 @@ class SaveData:
         self.match_flag = False
 
         # "glob_pattern" を検索
-        # 末尾4桁が数字のパターン
-        glob_pattern = "{}{}{}_[0-9][0-9][0-9][0-9][0-9]{}"\
-                       .format(self.path, self.delimiter, self.name, extension)
+        # 末尾5桁が数字のパターン
+        name = "{}_[0-9][0-9][0-9][0-9][0-9]{}".format(self.name, extension)
+        glob_pattern = os.path.join(self.path, name)
         match_file = glob.glob(glob_pattern)
         search_file = str(self.name) + "_*****" + str(extension)
 
@@ -91,8 +80,10 @@ class SaveData:
         print(search_file.rjust(print_col, " "))
         print(">> Search name:")
         print(str(self.name).rjust(print_col, " "))
+        print("> Serch pattern: {}".format(glob_pattern))
+        print("> Match file: {}".format(match_file))
         print("")
-# }}}
+        # }}}
 
         # ファイル有無 判定
         if match_file:
@@ -104,7 +95,8 @@ class SaveData:
             try:
                 os.mkdir("{}".format(self.path))
 
-            except FailMakeDir:
+            except :
+            # except FailMakeDir:
                 set_name = self.path + self.name + "_00000" + extension
                 self.match_flag = False
 
@@ -116,19 +108,19 @@ class SaveData:
             print(">> Match file:")
 
             for obj in match_file:
-                # ヒットしたファイルのタイムスタンプ取得 処理
+                # 捕捉したファイルのタイムスタンプ取得 処理
                 stat = os.stat(obj)
                 mod_last = stat.st_mtime
                 time_last = datetime.datetime.fromtimestamp(mod_last)
                 time_last = time_last.strftime("%Y-%m-%d %H:%M:%S")
                 list_name.append([obj, time_last])
 
-                # ヒットしたファイル名とタイムスタンプ 出力
+                # 捕捉したファイル名とタイムスタンプ 出力
                 print("{}\n{}".format(obj, time_last))
 
             print("".center(print_col, "/"))
 
-            # ヒットしたファイル タイムスタンプ順でソート
+            # 捕捉したファイル タイムスタンプ順でソート
             list_name.sort(key=itemgetter(1))
             old_name = list_name[0][0]
             print(">> Sort by time:")
@@ -219,15 +211,14 @@ class SaveData:
 
 def main():
     host = platform.uname()[1]
-    if host == "HBAMB1449":
+    if "HBAMB" in host:
         name = "TestOutWinMuRata"
         path_master = "C:\\Temp"
-        text = "test from HBAMB1448"
+        text = "test from muRata PC"
 
     elif host == "ProSalad13.local":
         name = "TestOutMac"
         path_master = "/Users/wacky515/OneDrive/Biz/Python/SaveData/TestOut"
-        # path_master = "/Users/wacky515/OneDrive/Biz/Python"
         text = "test from MacPro"
 
     elif host == "cad0021":
@@ -235,12 +226,15 @@ def main():
         path_master = "D:\\OneDrive\\Biz\\Python\\SaveData\\TestOut"
         text = "test from Z420"
 
-    else:
-        name = "Other_PC"
-        # これはエラー: path_master = "~/Python/SaveData/TestOut"
-        # path_master = os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Python\\SaveData\\TestOut"
-        path_master = os.getenv("USERPROFILE") + "\\Python\\SaveData\\TestOut"
-        text = "test from other PC"
+    elif os.name != "nt":
+        name = "TestOutOtherWinPC"
+        path_master = os.path.join("%USERPROFILE%", "/Python/ImageProcessing")
+        text = "test from other Windows PC"
+
+    elif os.name == "nt":
+        name = "TestOutOtherUnixPC"
+        path_master = "~/Python/SaveData/TestOut"
+        text = "test from other Unix PC"
 
     test_save = SaveData(name, path_master)
     test_save.save_text(text)
