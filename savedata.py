@@ -7,7 +7,7 @@
 # Author:      Kilo11
 #
 # Created:     2016/03/23
-# Last Change: 2021/03/11 17:16:23.
+# Last Change: 2021/03/13 20:17:12.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10006
 # ----------------------------------------------------------------------  # }}}
@@ -95,8 +95,7 @@ class SaveData:
             try:
                 os.mkdir("{}".format(self.path))
 
-            except :
-            # except FailMakeDir:
+            except OSError:
                 set_name = self.path + self.name + "_00000" + extension
                 self.match_flag = False
 
