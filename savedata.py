@@ -7,7 +7,7 @@
 # Author:      Kilo11
 #
 # Created:     2016/03/23
-# Last Change: 2021/03/13 20:17:12.
+# Last Change: 2021/03/15 08:52:36.
 # Copyright:   (c) SkyDog 2016
 # Licence:     SDS10006
 # ----------------------------------------------------------------------  # }}}
@@ -44,6 +44,7 @@ print_col = 50
 
 class SaveData:
     """ テキストデータ 保存クラス """
+
     def __init__(self, name, path):
         self.name = name
         self.path = path
@@ -134,7 +135,7 @@ class SaveData:
         print("")
 
         # "_[2連続以上の数値型]"を検索し、"数値のみ" 取得してインクリメント
-        re_pattern = re.compile("_\d{2,}")
+        re_pattern = re.compile(r"_\d{2,}")
         search = re_pattern.search(set_name)
         find = search.group()[1:]
         get_num = int(find)
